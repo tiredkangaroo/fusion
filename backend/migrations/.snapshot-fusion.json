@@ -1,0 +1,314 @@
+{
+  "namespaces": [
+    "public"
+  ],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "_id": {
+          "name": "_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "conversation",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "conversation_pkey",
+          "columnNames": [
+            "_id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "_id": {
+          "name": "_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "pfp": {
+          "name": "pfp",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "user",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "username"
+          ],
+          "composite": false,
+          "keyName": "user_username_unique",
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "user_pkey",
+          "columnNames": [
+            "_id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "_id": {
+          "name": "_id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz(0)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 0,
+          "mappedType": "datetime"
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "image": {
+          "name": "image",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "user__id": {
+          "name": "user__id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "conversation__id": {
+          "name": "conversation__id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "message",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "message_pkey",
+          "columnNames": [
+            "_id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "message_user__id_foreign": {
+          "constraintName": "message_user__id_foreign",
+          "columnNames": [
+            "user__id"
+          ],
+          "localTableName": "public.message",
+          "referencedColumnNames": [
+            "_id"
+          ],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        },
+        "message_conversation__id_foreign": {
+          "constraintName": "message_conversation__id_foreign",
+          "columnNames": [
+            "conversation__id"
+          ],
+          "localTableName": "public.message",
+          "referencedColumnNames": [
+            "_id"
+          ],
+          "referencedTableName": "public.conversation",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "user__id": {
+          "name": "user__id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "conversation__id": {
+          "name": "conversation__id",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        }
+      },
+      "name": "user_conversations",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "user_conversations_pkey",
+          "columnNames": [
+            "user__id",
+            "conversation__id"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "user_conversations_user__id_foreign": {
+          "constraintName": "user_conversations_user__id_foreign",
+          "columnNames": [
+            "user__id"
+          ],
+          "localTableName": "public.user_conversations",
+          "referencedColumnNames": [
+            "_id"
+          ],
+          "referencedTableName": "public.user",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        },
+        "user_conversations_conversation__id_foreign": {
+          "constraintName": "user_conversations_conversation__id_foreign",
+          "columnNames": [
+            "conversation__id"
+          ],
+          "localTableName": "public.user_conversations",
+          "referencedColumnNames": [
+            "_id"
+          ],
+          "referencedTableName": "public.conversation",
+          "deleteRule": "cascade",
+          "updateRule": "cascade"
+        }
+      }
+    }
+  ]
+}

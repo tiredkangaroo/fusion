@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.auth-button {
+  @apply align-middle bg-[#000000] hover:bg-[#404040] text-white py-2 px-4 rounded-md;
+}
+.profile-picture {
+  @apply border-2 border-solid rounded-full;
+}
+
+.sidebar-button {
+  @apply bg-[#e0e0e0] py-4 w-[4.5vw] min-w-[45px] h-fit border-[0.75px] border-black rounded-full;
+}
+.sidebar-button-highlighted {
+  @apply bg-[#000000] text-white;
+}
+.chat-user {
+  @apply bg-[#e0e0e0] w-[17vw] h-fit py-1 px-1 leading-10 flex flex-row min-w-fit;
+}
+.chat-user > img {
+  @apply rounded-full w-12 h-fit items-center;
+}
+.chat-user > p {
+  @apply ml-4 items-center mt-[0.325rem];
+}
+.chat-user-highlighted {
+  @apply bg-[#545454] text-white;
+}
+.createAccountInput {
+  @apply border border-black border-solid rounded-sm mt-4 py-2 px-3 w-[100%];
+}
