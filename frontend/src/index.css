@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  @apply overflow-hidden;
+}
 .auth-button {
   @apply align-middle bg-[#000000] hover:bg-[#404040] text-white py-2 px-4 rounded-md;
 }
@@ -28,5 +32,5 @@
   @apply bg-[#545454] text-white;
 }
 .createAccountInput {
-  @apply border border-black border-solid rounded-sm mt-4 py-2 px-3 w-[100%];
+  @apply border border-black border-solid rounded-sm mt-4 py-2 px-3 w-[55%];
 }

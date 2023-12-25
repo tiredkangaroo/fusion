@@ -1,7 +1,15 @@
-import { Collection, Entity, ManyToMany, OneToMany, Property, Unique } from "@mikro-orm/core";
+import {
+  Collection,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  Property,
+  Unique,
+} from "@mikro-orm/core";
 import Base, { BaseType } from "./Base";
 import Conversation from "./Conversation";
 import Message from "./Message";
+import Task from "./Task";
 
 @Entity()
 export default class User extends Base {
@@ -26,6 +34,9 @@ export default class User extends Base {
 
   @OneToMany(() => Message, "user")
   messages? = new Collection<Message>(this);
+
+  @ManyToMany(() => Task, "people", { owner: true })
+  tasks? = new Collection<Task>(this);
 }
 
 export interface UserType extends BaseType {

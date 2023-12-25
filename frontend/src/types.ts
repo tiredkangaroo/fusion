@@ -16,6 +16,7 @@ export interface ConversationType extends BaseType {
 }
 export interface UserType extends BaseType {
   username: string;
+  email: string;
   pfp: string;
   conversations: Array<ConversationType>;
   members: Array<UserType>;

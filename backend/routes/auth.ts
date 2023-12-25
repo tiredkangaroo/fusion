@@ -1,33 +1,11 @@
-import { Loaded } from "@mikro-orm/core";
 import bcrypt from "bcrypt";
-import express, { Router } from "express";
+import { Router } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { DI, RI } from "..";
 import User from "../entities/User";
 import Validate from "../inputvalidator";
 
 const authRouter = Router();
-
-export async function loginCheck(
-  req: express.Request
-): Promise<{ user: null; error: string } | { user: Loaded<User>; error: null }> {
-  if (!req.cookies.session) {
-    return { user: null, error: "No session." };
-  }
-  const userID = await RI.get(req.cookies.session);
-  if (!userID) {
-    return { user: null, error: "Invalid session." };
-  }
-  const currentUser = await DI.em.findOne(
-    User,
-    { _id: userID },
-    { populate: ["conversations", "conversations.members"] }
-  );
-  if (!currentUser) {
-    return { user: null, error: "Session has no user." };
-  }
-  return { user: currentUser, error: null };
-}
 
 authRouter.post("/signin", async (req, res) => {
   const check = Validate("signIn", req.body);
@@ -40,23 +18,30 @@ authRouter.post("/signin", async (req, res) => {
   if (!proposedUser) {
     return res.status(404).json({ errors: ["That user does not exist."] });
   }
-  const correctPassword = bcrypt.compareSync(req.body.password, proposedUser.password);
+  const correctPassword = bcrypt.compareSync(
+    req.body.password,
+    proposedUser.password,
+  );
   const newSessionID = uuidv4();
   if (correctPassword) {
     RI.set(newSessionID, proposedUser._id);
-    res.cookie("session", newSessionID, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true });
+    res.cookie("session", newSessionID, {
+      maxAge: 3 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
     return res.status(200).json({ errors: null });
   } else {
-    return res.status(401).json({ errors: ["Incorrect username or password."] });
+    return res
+      .status(401)
+      .json({ errors: ["Incorrect username or password."] });
   }
 });
 
 authRouter.get("/me", async (req, res) => {
-  const { user, error } = await loginCheck(req);
-  if (error) {
-    return res.status(400).json({ errors: [error] });
+  if (req.user) {
+    res.status(200).send({ data: req.user, errors: null });
   } else {
-    return res.status(200).json({ data: user, errors: null });
+    res.status(401).send({ data: null, error: "The user is not signed in." });
   }
 });
 
@@ -66,7 +51,6 @@ authRouter.post("/createaccount", async (req, res) => {
     return res.status(400).json(check);
   }
 
-  // const id: UUID = crypto.randomUUID();
   const username = req.body.username;
   const salt = bcrypt.genSaltSync();
   const password = bcrypt.hashSync(req.body.password, salt);
@@ -82,7 +66,10 @@ authRouter.post("/createaccount", async (req, res) => {
     const newSessionID = uuidv4();
 
     RI.set(newSessionID, newUser._id);
-    res.cookie("session", newSessionID, { maxAge: 3 * 60 * 60 * 1000, httpOnly: true });
+    res.cookie("session", newSessionID, {
+      maxAge: 3 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
     return res.status(200).json({ errors: null });
   } catch (error) {
     return res.status(400).json({ errors: error });

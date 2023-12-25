@@ -11,10 +11,10 @@ export default {
     pathTs: path.join(path.resolve(), "migrations"),
     glob: "!(*.d).{js,ts}", // match migration files (all .js and .ts files, but not .d.ts)
   },
-
+  populateAfterFlush: true,
   entities: [User, Conversation, Message],
   dbName: "fusion",
   type: "postgresql",
-  debug: true,
+  debug: false,
   snapshot: false,
 } as Parameters<typeof MikroORM.init>[0];

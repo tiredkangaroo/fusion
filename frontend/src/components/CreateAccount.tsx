@@ -4,10 +4,14 @@ import axiosInstance from "../axiosinstance";
 export default function CreateAccount() {
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
+  const passwordConfirmRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const phoneNumberRef = useRef<HTMLInputElement>(null);
   async function handleCreateAccount(e: any) {
     e.preventDefault();
+    if (!(passwordRef.current?.value === passwordConfirmRef.current?.value)) {
+      return 1;
+    }
     const res = await axiosInstance.post("/api/auth/createaccount", {
       username: usernameRef.current!.value,
       password: passwordRef.current!.value,
@@ -34,6 +38,12 @@ export default function CreateAccount() {
           type="password"
           placeholder="Password"
           ref={passwordRef}
+        />
+        <input
+          className="createAccountInput"
+          type="password"
+          placeholder="Confirm Password"
+          ref={passwordConfirmRef}
         />
         <input
           className="createAccountInput"

@@ -2,7 +2,8 @@ export default function HomeNoAuth() {
   return (
     <div className="">
       <p className="text-center mt-[10vh]">
-        Fusion is the <b>next-generation</b> app for team collaboration.
+        Fusion is a <b>collaboration-focused</b> app for <b>next-generation</b>{" "}
+        teams around the world 🌎.
       </p>
     </div>
   );

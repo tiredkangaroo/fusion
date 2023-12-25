@@ -6,7 +6,7 @@ import ConversationUI from "./ConversationUI";
 import NewConversationModal from "./NewConversationModal";
 import EditTitle from "./EditTitleModal";
 export default function Chats() {
-  const [user, _] = useContext(UserContext);
+  const [user] = useContext(UserContext);
   const [activeConversation, setActiveConversation] = useState<null | number>(
     null,
   );
@@ -30,7 +30,6 @@ export default function Chats() {
       return "chat-user";
     }
   }
-  console.log(conversations);
   function ConversationListDisplay({
     conversation,
   }: {
@@ -65,15 +64,17 @@ export default function Chats() {
         <div className="flex flex-row gap-4">
           <div className="flex flex-col float-left gap-9 mt-5">
             <NewConversationModal invokeRefresh={fetchConversations} />
-            {conversations.map((conversation, index) => (
-              <div
-                className={chatUserClassName(index)}
-                key={index}
-                onClick={() => setActiveConversation(index)}
-              >
-                <ConversationListDisplay conversation={conversation} />
-              </div>
-            ))}
+            <div className="overflow-y-scroll h-[70vh] flex flex-col gap-y-5">
+              {conversations.map((conversation, index) => (
+                <div
+                  className={chatUserClassName(index)}
+                  key={index}
+                  onClick={() => setActiveConversation(index)}
+                >
+                  <ConversationListDisplay conversation={conversation} />
+                </div>
+              ))}
+            </div>
           </div>
           <div className="grow-[100] mt-5">
             <ConversationUI

@@ -1,15 +1,38 @@
-import { Dispatch, SetStateAction, createContext, useContext, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  createContext,
+  useContext,
+  useState,
+} from "react";
 import { UserContext } from "../App";
 import Chat from "./Chats";
 import HomeNoAuth from "./HomeNoAuth";
 import Sidebar from "./Sidebar";
+import Tasks from "./Tasks";
 
 type ActiveViewContextType = [number, Dispatch<SetStateAction<number>>];
-export const ActiveViewContext = createContext<ActiveViewContextType>([0, () => {}]);
+export const ActiveViewContext = createContext<ActiveViewContextType>([
+  0,
+  () => {},
+]);
 
 export default function Home() {
-  const [user, _] = useContext(UserContext);
+  const [user] = useContext(UserContext);
   const [activeView, setActiveView] = useState(0);
+  function Display() {
+    switch (activeView) {
+      case 0:
+        return <Chat />;
+      case 1:
+        return <Tasks />;
+      default:
+        return <Chat />;
+    }
+    if (activeView === 0) {
+      return <Chat />;
+    }
+  }
   function HomeAuth() {
     return (
       <div className="flex flex-row">
@@ -17,7 +40,7 @@ export default function Home() {
           <Sidebar />
         </div>
         <div className="grow-[100] h-fit">
-          <Chat />
+          <Display />
         </div>
       </div>
     );

@@ -4,7 +4,6 @@ import { UserContext } from "../App";
 import axiosInstance from "../axiosinstance";
 import { ConversationType, MessageType } from "../types";
 import Message from "./Message";
-
 interface ConversationUIParamaterType {
   conversations: Array<ConversationType>;
   activeConversation: null | number;
@@ -18,17 +17,49 @@ export default function ConversationUI({
   const [user] = useContext(UserContext);
   const [messages, setMessages] = useState<null | Array<MessageType>>(null);
   const newMessageInputRef = useRef<HTMLInputElement>(null);
-
+  const hitRef = useRef<HTMLDivElement>(null);
+  const [ws, setWs] = useState<null | WebSocket>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (activeConversation != null) {
+      const newWs = new WebSocket(
+        `ws://192.168.1.201:8000/api/conversation/live/${conversations[activeConversation]._id}`,
+      );
+      setWs(newWs);
+    }
+  }, [activeConversation, conversations]);
+  if (ws && activeConversation != null) {
+    ws.addEventListener("message", (e) => {
+      console.log("hit");
+      const { user, message } = JSON.parse(e.data);
+      const tMessages = messages === null ? [] : messages;
+      const newStateMessages = [
+        ...tMessages,
+        {
+          text: message,
+          user: user,
+          conversation: conversations[activeConversation],
+        },
+      ];
+      setMessages(newStateMessages as Array<MessageType>);
+    });
+  }
+  useEffect(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight + 100000;
+    }
+  }, [messagesRef, messages, hitRef]);
   async function handleNewMessage(e: any) {
     e.preventDefault();
     if (activeConversation != null) {
-      const res = await axiosInstance.post("/api/message/newmessage", {
-        conversation_id: conversations[activeConversation]._id,
-        text: newMessageInputRef.current!.value,
-      });
-      if (res.status === 200) {
+      if (ws === null) {
+        await axiosInstance.post("/api/message/newmessage", {
+          conversation_id: conversations[activeConversation]._id,
+          text: newMessageInputRef.current!.value,
+        });
+        const tMessages = messages === null ? [] : messages;
         const newStateMessages = [
-          ...messages!,
+          ...tMessages,
           {
             text: newMessageInputRef.current!.value,
             user: user,
@@ -36,8 +67,10 @@ export default function ConversationUI({
           },
         ];
         setMessages(newStateMessages as Array<MessageType>);
-        newMessageInputRef.current!.value = "";
+      } else {
+        ws.send(newMessageInputRef.current!.value);
       }
+      newMessageInputRef.current!.value = "";
     }
   }
   function NewMessageField() {
@@ -82,9 +115,12 @@ export default function ConversationUI({
     if (messages) {
       return (
         <div className="flex flex-col align-middle w-[100%]">
-          {messages.map((message, index) => (
-            <Message key={index}>{message}</Message>
-          ))}
+          <div className="overflow-y-scroll h-[70vh]" ref={messagesRef}>
+            {messages.map((message, index) => (
+              <Message key={index}>{message}</Message>
+            ))}
+          </div>
+
           <NewMessageField />
         </div>
       );
