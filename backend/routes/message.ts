@@ -5,6 +5,7 @@ import Message from "../entities/Message";
 import User from "../entities/User";
 import { modifyConversation } from "./conversation";
 import { EntityData } from "@mikro-orm/core";
+import Validate from "../inputvalidator";
 
 const messageRouter = Router();
 
@@ -13,6 +14,17 @@ export async function newMessage(
   text: string,
   conversation_id: string,
 ) {
+  console.log("new message incoming");
+  const validator = Validate("newMessageInput", {
+    text: text,
+    conversation_id: conversation_id,
+  });
+  if (validator.errors) {
+    return {
+      data: null,
+      errors: validator.errors,
+    };
+  }
   const conversation = await DI.em.findOne(Conversation, {
     _id: conversation_id,
   });
@@ -73,5 +85,18 @@ messageRouter.get("/getMessages/:conversation_id", async (req, res) => {
     { populate: ["user", "user.username", "user.email", "user.pfp"] },
   );
   return res.status(200).json({ errors: null, data: messages });
+});
+messageRouter.post("/delete", async (req, res) => {
+  const messageToDelete = await DI.em.findOne(Message, {
+    _id: req.body.message_id,
+  });
+  if (!messageToDelete) {
+    return res.status(400).json({
+      errors: ["Unable to find the message to delete. It does not exist."],
+    });
+  }
+  await DI.em.remove(messageToDelete);
+  await DI.em.persistAndFlush();
+  return res.status(200).json({ errors: null });
 });
 export default messageRouter;

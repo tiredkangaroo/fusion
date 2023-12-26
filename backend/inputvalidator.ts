@@ -6,16 +6,18 @@ export default function Validate(
     | "newMessageInput"
     | "modifyConversationInput"
     | "setTitleInput",
-  data: any
+  data: { [key: string]: string },
 ) {
   function CreateAccountInput(): { errors: null | Array<string> } {
     try {
-      let errs = [];
+      const errs = [];
       if (!data.username) {
         errs.push("No username specified.");
       } else {
         if (data.username.length < 3) {
-          errs.push("The length of the username must be greater than length 3.");
+          errs.push(
+            "The length of the username must be greater than length 3.",
+          );
         }
         if (data.username.length > 19) {
           errs.push("The length of the username must be less than length 19.");
@@ -45,7 +47,7 @@ export default function Validate(
 
   function SignInInput() {
     try {
-      let errs = [];
+      const errs = [];
       if (!data.username) {
         errs.push("No username specified.");
       }
@@ -60,7 +62,7 @@ export default function Validate(
 
   function StartConversationInput() {
     try {
-      let errs = [];
+      const errs = [];
       if (!data.members) {
         errs.push("No members specified for conversation.");
         if (!(data.members.length >= 2)) {
@@ -76,10 +78,10 @@ export default function Validate(
   }
   function NewMessageInput() {
     try {
-      let errs = [];
-      if (!data.text && !data.image) {
+      const errs = [];
+      if (!data.text) {
         errs.push("No content for message.");
-      } else if (data.text.length > 1024) {
+      } else if (data.text.length > 250) {
         errs.push("Text content is too long.");
       } else if (data.text.length < 1) {
         errs.push("No content in the text.");

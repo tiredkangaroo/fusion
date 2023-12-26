@@ -20,13 +20,16 @@ export default function ConversationUI({
   const hitRef = useRef<HTMLDivElement>(null);
   const [ws, setWs] = useState<null | WebSocket>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  function connectToWS() {
     if (activeConversation != null) {
       const newWs = new WebSocket(
         `ws://192.168.1.201:8000/api/conversation/live/${conversations[activeConversation]._id}`,
       );
       setWs(newWs);
     }
+  }
+  useEffect(() => {
+    connectToWS();
   }, [activeConversation, conversations]);
   if (ws && activeConversation != null) {
     ws.addEventListener("message", (e) => {
@@ -43,6 +46,9 @@ export default function ConversationUI({
       ];
       setMessages(newStateMessages as Array<MessageType>);
     });
+    ws.addEventListener("close", (_) => {
+      setWs(null);
+    });
   }
   useEffect(() => {
     if (messagesRef.current) {
@@ -52,7 +58,7 @@ export default function ConversationUI({
   async function handleNewMessage(e: any) {
     e.preventDefault();
     if (activeConversation != null) {
-      if (ws === null) {
+      if (ws === null || ws.readyState != ws.OPEN) {
         await axiosInstance.post("/api/message/newmessage", {
           conversation_id: conversations[activeConversation]._id,
           text: newMessageInputRef.current!.value,
@@ -105,6 +111,11 @@ export default function ConversationUI({
       ? fetchMessages()
       : console.log("Will fetch later, conversation is not selected.");
   }, [activeConversation, conversations]);
+  function removeMessage(idx: number) {
+    if (messages) {
+      setMessages([...messages.slice(0, idx), ...messages.slice(idx + 1)]);
+    }
+  }
   if (activeConversation === null) {
     return (
       <div className="flex flex-row align-middle">
@@ -117,11 +128,31 @@ export default function ConversationUI({
         <div className="flex flex-col align-middle w-[100%]">
           <div className="overflow-y-scroll h-[70vh]" ref={messagesRef}>
             {messages.map((message, index) => (
-              <Message key={index}>{message}</Message>
+              <Message
+                key={index}
+                removeMessage={() => {
+                  removeMessage(index);
+                }}
+              >
+                {message}
+              </Message>
             ))}
           </div>
 
           <NewMessageField />
+          <div className="text-slate-600 text-sm">
+            Using the{" "}
+            {ws && ws.readyState === ws.OPEN ? (
+              "WebSocket protocol."
+            ) : (
+              <span>
+                HTTP protocol (WebSocket is not connected).{" "}
+                <button onClick={connectToWS} className="text-blue-600">
+                  Retry Connection.
+                </button>
+              </span>
+            )}
+          </div>
         </div>
       );
     } else {

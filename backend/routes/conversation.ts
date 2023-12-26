@@ -105,7 +105,7 @@ conversationRouter.post("/addmember", async (req, res) => {
   } catch (err) {
     return res.status(500).json({ errors: [err] });
   }
-  return res.status(200).json({ errors: null });
+  return res.status(200).json({ errors: null, data: userToAdd });
 });
 
 conversationRouter.post("/removemember", async (req, res) => {

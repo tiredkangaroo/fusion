@@ -5,6 +5,7 @@ import { ConversationType } from "../types";
 import ConversationUI from "./ConversationUI";
 import NewConversationModal from "./NewConversationModal";
 import EditTitle from "./EditTitleModal";
+import AddMember from "./AddMember";
 export default function Chats() {
   const [user] = useContext(UserContext);
   const [activeConversation, setActiveConversation] = useState<null | number>(
@@ -35,11 +36,17 @@ export default function Chats() {
   }: {
     conversation: ConversationType;
   }) {
+    console.log(conversations);
     return (
       <div className="flex flex-col items-center w-[100%]">
         <div className="text-center flex flex-row">
           {conversation.title ? conversation.title : "(Untitled)"}
           <EditTitle conversation_id={conversation._id} currentTitle={""} />
+          <AddMember
+            conversation_id={conversation._id}
+            conversations={conversations}
+            setConversations={setConversations}
+          />
         </div>
         {conversation.members.map((member, idx) => {
           if (member.username != user!.username)
