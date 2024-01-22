@@ -20,11 +20,7 @@ if the text wraps, the delete button is off, and you have to use x scroll lookin
 
 title explains itself
 
-## bug 5: i can send empty strings if i add a space?
-
-very easy fix
-
-## bug 6: the text underneath the message field can be inaccurate
+## bug 5: the text underneath the message field can be inaccurate
 
 usually its correct, but sometimes it says im using the normal http protocol, and not the upgraded websockets, even though i am using websockets??
 

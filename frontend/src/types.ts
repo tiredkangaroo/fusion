@@ -1,7 +1,7 @@
 export interface BaseType {
   _id: string;
-  created_at?: Date;
-  updated_at?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 export interface MessageType extends BaseType {
   text?: string;
@@ -18,6 +18,9 @@ export interface UserType extends BaseType {
   username: string;
   email: string;
   pfp: string;
+  bio: string;
+  organization: string;
   conversations: Array<ConversationType>;
   members: Array<UserType>;
+  phone_number?: string;
 }

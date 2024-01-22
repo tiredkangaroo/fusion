@@ -1,20 +1,29 @@
-import { useContext, useEffect } from "react";
+import { Dispatch, SetStateAction, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../App";
 import axiosInstance, { acceptableCodes } from "../axiosinstance";
 import { UserType } from "../types";
 
-export default function Header() {
+export default function Header({
+  setLoading,
+}: {
+  setLoading: Dispatch<SetStateAction<boolean>>;
+}) {
   const [user, setUser] = useContext(UserContext);
   useEffect(() => {
     async function fetchUser() {
-      const res = await axiosInstance.get("/api/auth/me");
-      if (acceptableCodes.includes(res.status)) {
-        setUser(res.data.data as UserType);
+      try {
+        const res = await axiosInstance.get("/api/auth/me");
+        if (acceptableCodes.includes(res.status)) {
+          setUser(res.data.data as UserType);
+        }
+        setLoading(false);
+      } catch {
+        setLoading(false);
       }
     }
     fetchUser();
-  }, []);
+  }, [setLoading, setUser]);
   function HeaderRightSide() {
     if (user) {
       return (
@@ -33,7 +42,7 @@ export default function Header() {
   return (
     <div className="text-center h-[6rem]">
       <Link to={"/"}>
-        <h1 className="text-4xl bg inline-block p-[1rem] align-middle float-left">
+        <h1 className="text-4xl bg inline-block p-[1rem] align-middle float-left dark:text-white">
           Fusion
         </h1>
       </Link>

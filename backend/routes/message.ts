@@ -20,6 +20,7 @@ export async function newMessage(
     conversation_id: conversation_id,
   });
   if (validator.errors) {
+    console.log("message.ts line 23", validator.errors);
     return {
       data: null,
       errors: validator.errors,
@@ -66,7 +67,7 @@ messageRouter.post("/newmessage", async (req, res) => {
   if (errors) {
     return res.status(400).send({ data: null, errors: errors });
   }
-  return res.status(200).json({ errors: null, data: data!._id });
+  return res.status(200).json({ errors: null, data: data });
 });
 
 messageRouter.get("/getMessages/:conversation_id", async (req, res) => {
@@ -95,8 +96,7 @@ messageRouter.post("/delete", async (req, res) => {
       errors: ["Unable to find the message to delete. It does not exist."],
     });
   }
-  await DI.em.remove(messageToDelete);
-  await DI.em.persistAndFlush();
+  await DI.em.remove(messageToDelete).flush();
   return res.status(200).json({ errors: null });
 });
 export default messageRouter;

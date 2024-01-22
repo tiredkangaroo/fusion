@@ -15,17 +15,26 @@ export const UserContext = createContext<UserContextType>([null, () => {}]);
 
 function App() {
   const [user, setUser] = useState<null | UserType>(null);
-
-  return (
-    <BrowserRouter>
-      <UserContext.Provider value={[user, setUser]}>
-        <Header />
+  const [loading, setLoading] = useState<boolean>(true);
+  function RoutesOrSpin() {
+    if (loading) {
+      return <></>;
+    } else {
+      return (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/profile" element={<Profile />}></Route>
           <Route path="/createaccount" element={<CreateAccount />}></Route>
         </Routes>
+      );
+    }
+  }
+  return (
+    <BrowserRouter>
+      <UserContext.Provider value={[user, setUser]}>
+        <Header setLoading={setLoading} />
+        <RoutesOrSpin />
       </UserContext.Provider>
     </BrowserRouter>
   );

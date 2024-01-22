@@ -60,6 +60,7 @@ authRouter.post("/createaccount", async (req, res) => {
       password: password,
       email: req.body.email,
       phone_number: req.body.phone_number,
+      organization: req.body.organization,
       pfp: "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg",
     });
     await DI.em.persistAndFlush(newUser);
@@ -81,4 +82,8 @@ authRouter.get("/signout", async (_, res) => {
   return res.status(200).json({ errors: null });
 });
 
+authRouter.post("/changebio", async (req, res) => {
+  const newBio = req.body.bio;
+  return res.status(200).json({ errors: null });
+});
 export default authRouter;

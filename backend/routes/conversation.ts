@@ -189,14 +189,25 @@ async function broadcastMessage(
   message: string | ArrayBuffer | unknown,
 ) {
   if (!user) {
+    console.log("wow no user");
     return 1;
   }
-  await newMessage(user, message as string, conversation_id);
+  const newMsg = await newMessage(user, message as string, conversation_id);
+  if (newMsg.errors) {
+    console.log(newMsg.errors);
+    return 1;
+  }
   if (CI.has(conversation_id)) {
     CI.get(conversation_id).forEach((client: WebSocket) => {
       if (client.readyState === client.OPEN) {
         if (typeof message === "string" || message instanceof ArrayBuffer) {
-          client.send(JSON.stringify({ user: user, message: message }));
+          client.send(
+            JSON.stringify({
+              _id: newMsg.data?._id,
+              user: user,
+              message: message,
+            }),
+          );
         } else {
           console.log(
             "Will not be sending message to ANY clients. Message is of incompatible type.",
@@ -243,12 +254,8 @@ WSSI.on("connection", async (ws, req) => {
     CI.set(conversation_id, new Set());
   }
   CI.get(conversation_id).add(ws);
-  console.log(`A client just connected to ${conversation_id}.`);
   ws.on("message", async (msg) => {
     await broadcastMessage(user, conversation_id, msg);
-    // console.log(
-    // `i sent the message: ${msg} as ${user?.username} to ${conversation_id}`,
-    // );
   });
   ws.on("close", () => {
     return CI.get(conversation_id).delete(ws);

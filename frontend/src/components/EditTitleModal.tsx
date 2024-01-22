@@ -45,7 +45,7 @@ export default function EditTitle({
             autoFocus
             ref={newTitleRef}
             placeholder={currentTitle}
-            className="py-1.5 px-2"
+            className="py-1.5 px-2 border-2 border-black mt-3"
           />
           <button type="submit" className="auth-button ml-3">
             {" "}

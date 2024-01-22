@@ -62,15 +62,37 @@ export default function Chats() {
       </div>
     );
   }
+  useEffect(() => {
+    if (activeConversation != null && conversations) {
+      localStorage.setItem(
+        "lastOpenedConversation",
+        conversations[activeConversation]._id,
+      );
+    }
+  }, [activeConversation, conversations]);
+  useEffect(() => {
+    if (!activeConversation && conversations) {
+      const lastOpenedConversation = localStorage.getItem(
+        "lastOpenedConversation",
+      );
+      if (lastOpenedConversation != null) {
+        for (let i = 0; i < conversations.length; i++) {
+          if (conversations[i]._id === lastOpenedConversation) {
+            return setActiveConversation(i);
+          }
+        }
+      }
+    }
+  }, [conversations, activeConversation]);
 
   if (conversations && user) {
     return (
       <div className="ml-4 flex flex-col">
-        <h1 className="text-3xl">Chats</h1>
+        <h1 className="text-3xl dark:text-white">Chats</h1>
         <hr />
         <div className="flex flex-row gap-4">
           <div className="flex flex-col float-left gap-9 mt-5">
-            <NewConversationModal invokeRefresh={fetchConversations} />
+            <NewConversationModal />
             <div className="overflow-y-scroll h-[70vh] flex flex-col gap-y-5">
               {conversations.map((conversation, index) => (
                 <div

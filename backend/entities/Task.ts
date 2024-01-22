@@ -13,6 +13,6 @@ export default class Task extends Base {
   @ManyToMany(() => User, (user) => user.tasks)
   people: User;
 
-  @Property()
+  @Property({ nullable: true })
   due_date: Date;
 }

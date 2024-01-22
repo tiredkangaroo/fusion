@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { IoChatbubbleOutline, IoDocumentTextOutline } from "react-icons/io5";
-import { MdOutlineAssignment } from "react-icons/md";
+import { MdOutlineTaskAlt } from "react-icons/md";
 import { TfiAnnouncement } from "react-icons/tfi";
 import { ActiveViewContext } from "./Home";
+import { Button } from "@/components/ui/button";
 
 export default function Sidebar() {
   const [activeView, setActiveView] = useContext(ActiveViewContext);
@@ -17,7 +18,7 @@ export default function Sidebar() {
   const buttons = ["Chats", "Assignments", "Documents", "Public Announcements"];
   const icons = [
     <IoChatbubbleOutline />,
-    <MdOutlineAssignment />,
+    <MdOutlineTaskAlt />,
     <IoDocumentTextOutline />,
     <TfiAnnouncement />,
   ];
@@ -26,13 +27,15 @@ export default function Sidebar() {
     <div className="ml-3 float-left">
       <div className="flex flex-col gap-9">
         {buttons.map((_, index) => (
-          <button
+          <Button
             key={index}
             className={sidebarButtonClassName(index)}
             onClick={() => setActiveView(index)}
           >
-            <span className="text-[2rem] flex flex-col items-center">{icons[index]}</span>
-          </button>
+            <span className="text-[2rem] flex flex-col items-center">
+              {icons[index]}
+            </span>
+          </Button>
         ))}
       </div>
     </div>

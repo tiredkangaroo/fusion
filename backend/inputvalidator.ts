@@ -39,6 +39,9 @@ export default function Validate(
       if (!data.phone_number) {
         errs.push("No phone number specified.");
       }
+      if (!data.organization) {
+        errs.push("No organization specified.");
+      }
       return errs.length > 0 ? { errors: errs } : { errors: null };
     } catch (err) {
       return { errors: [err] };
@@ -83,7 +86,7 @@ export default function Validate(
         errs.push("No content for message.");
       } else if (data.text.length > 250) {
         errs.push("Text content is too long.");
-      } else if (data.text.length < 1) {
+      } else if (data.text.replaceAll(" ", "").length < 1) {
         errs.push("No content in the text.");
       }
       if (!data.conversation_id) {
